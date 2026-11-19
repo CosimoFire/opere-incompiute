@@ -6,7 +6,7 @@ Indice con anteprime e codice per il CMS: https://cosimofire.github.io/opere-inc
 
 | Dataviz | URL |
 |---|---|
-| Le 10 opere pubbliche incompiute più costose | https://cosimofire.github.io/opere-incompiute/top10-importo/ |
+| Le 10 opere incompiute più costose | https://cosimofire.github.io/opere-incompiute/top10-importo/ |
 | Opere incompiute per stato dei lavori (treemap) | https://cosimofire.github.io/opere-incompiute/treemap-stato/ |
 | Opere incompiute per provincia (mappa) | https://cosimofire.github.io/opere-incompiute/mappa-province/ |
 
