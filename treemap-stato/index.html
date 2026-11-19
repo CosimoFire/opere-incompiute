@@ -1,0 +1,160 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Opere incompiute per stato dei lavori – Radar QN</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Libre+Franklin:wght@400;500;600;700&family=Newsreader:opsz,wght@6..72,400;6..72,700&display=swap">
+<link rel="stylesheet" href="../assets/radar.css">
+<script src="https://cdn.jsdelivr.net/npm/d3@7"></script>
+<script src="../assets/radar.js"></script>
+<style>
+  /* colore del testo nelle celle: il più leggibile su ciascun riempimento, nei due temi */
+  :root { --tm-on-b: #ffffff; --tm-on-a: #1a1a1a; --tm-on-c: #1a1a1a; }
+  :root[data-theme="dark"] { --tm-on-b: #121212; --tm-on-a: #121212; --tm-on-c: #f2f2f2; }
+  .tm-leaf { stroke: var(--bg); stroke-width: 3px; }
+  .tm-num { font-size: 40px; font-weight: 700; letter-spacing: -0.02em; pointer-events: none; }
+  .tm-pct { font-size: 14px; font-weight: 600; pointer-events: none; }
+  .tm-lab { font-size: 14px; font-weight: 400; pointer-events: none; }
+</style>
+</head>
+<body>
+<main class="radar">
+  <header>
+    <h1 class="r-title" id="title">Più di metà delle opere incompiute non ha le condizioni per ripartire</h1>
+    <p class="r-sub">Opere pubbliche incompiute per stato dei lavori secondo il DM 42/2013. Anno di riferimento 2025</p>
+  </header>
+
+  <div class="r-big" id="big" aria-hidden="true">
+    <span class="r-big__num" id="big-num">&nbsp;</span>
+    <span class="r-big__label" id="big-label"></span>
+  </div>
+
+  <figure class="r-chart" id="tm"></figure>
+
+  <p class="r-note" id="nota"></p>
+
+  <footer class="r-foot">
+    <span>Fonte: MIT e Regioni, elenco-anagrafe delle opere incompiute 2025</span>
+    <span>Elaborazione Radar – QN</span>
+  </footer>
+</main>
+
+<script>
+(function () {
+  var R = Radar, fmt = R.fmt, f0 = function (v) { return fmt(v, 0); };
+  // i tre stati del DM 42/2013: "b" è la notizia (blu), gli altri contesto (grigi)
+  var ST = {
+    b: { lab: "Lavori interrotti, senza le condizioni per riprenderli", fill: "var(--blue-2)" },
+    a: { lab: "Lavori interrotti oltre il termine previsto dal contratto", fill: "var(--grey-3)" },
+    c: { lab: "Lavori finiti, ma l'opera non supera il collaudo", fill: "var(--grey-5)" }
+  };
+  var ORDER = ["b", "a", "c"];
+
+  R.loadCSV("../data/treemap_stato.csv").then(function (rows) {
+    // il CSV è per stato e regione: qui si somma per stato; le regioni restano nel tooltip
+    var data = rows.map(function (r) { return { s: r["lettera"], ente: r["ente"], n: R.num(r["opere"]) }; });
+    var tot = d3.sum(data, function (d) { return d.n; });
+    var stati = ORDER.map(function (s) {
+      var parti = data.filter(function (d) { return d.s === s; }).sort(function (x, y) { return y.n - x.n; });
+      return { s: s, value: d3.sum(parti, function (d) { return d.n; }), parti: parti };
+    });
+    var byS = {}; stati.forEach(function (d) { byS[d.s] = d.value; });
+    var shareB = byS.b / tot;
+    if (shareB <= 0.5) d3.select("#title").text("Le opere incompiute per stato dei lavori");   // il titolo dipende dal dato
+
+    var bigNum = d3.select("#big-num");
+    d3.select("#big-label").text("opere su " + f0(tot) + " (" + R.pct(shareB, 0).replace(",0", "") + ") sono ferme senza le condizioni per riprendere i lavori");
+    if (R.reduced) bigNum.text(f0(byS.b));
+    else { bigNum.text(f0(0)); R.onFirstView(document.getElementById("big"), function () { R.countUp(bigNum, byS.b, f0, "play"); }); }
+
+    d3.select("#nota").text(
+      "Lo stato è la classificazione prevista dal DM 42/2013 (art. 1). Le cause vere e proprie dell'interruzione " +
+      "(mancanza di fondi, cause tecniche, fallimento dell'impresa) negli elenchi pubblicati non ci sono. " +
+      "Comprese le opere delle amministrazioni centrali. Abruzzo e Valle d'Aosta non hanno pubblicato l'elenco 2025; " +
+      "la Provincia di Bolzano lo ha pubblicato vuoto.");
+
+    var host = document.getElementById("tm");
+    var tip = R.tooltip(host);
+    var clear = function () {};
+    R.dismissOutside(host, function () { tip.hide(); clear(); });
+
+    R.responsive(host, function (W, phase) {
+      var narrow = R.isNarrow(W);
+      // mobile: tre fasce a tutta larghezza (area sempre proporzionale); desktop: treemap "a quadrati"
+      var H = narrow ? Math.round(W * 1.75) : 420;
+      var root = d3.hierarchy({ children: stati }).sum(function (d) { return d.value || 0; })
+        .sort(function (x, y) { return y.value - x.value; });
+      d3.treemap().size([W, H]).tile(narrow ? d3.treemapSlice : d3.treemapSquarify.ratio(1)).round(true)(root);
+
+      d3.select(host).select("svg").remove();
+      var svg = d3.select(host).insert("svg", ".r-tip").attr("width", W).attr("height", H).attr("role", "img")
+        .attr("aria-label", "Treemap: su " + f0(tot) + " opere incompiute censite per il 2025, " + f0(byS.b) + " (" + R.pct(byS.b / tot, 0) +
+          ") hanno i lavori interrotti senza le condizioni per riprenderli, " + f0(byS.a) + " (" + R.pct(byS.a / tot, 0) +
+          ") sono ferme oltre il termine contrattuale e " + f0(byS.c) + " (" + R.pct(byS.c / tot, 0) + ") hanno i lavori finiti ma non superano il collaudo.");
+      svg.append("title").text("Opere incompiute per stato dei lavori");
+
+      var cells = svg.append("g").selectAll("g").data(root.leaves()).join("g").attr("class", "mark")
+        .attr("transform", function (d) { return "translate(" + d.x0 + "," + d.y0 + ")"; });
+      cells.append("rect").attr("class", "tm-leaf")
+        .attr("width", function (d) { return Math.max(0, d.x1 - d.x0); }).attr("height", function (d) { return Math.max(0, d.y1 - d.y0); })
+        .attr("rx", 2).style("fill", function (d) { return ST[d.data.s].fill; });
+
+      // etichette: numero grande, quota, descrizione a capo; si riducono se il rettangolo è piccolo
+      cells.each(function (d) {
+        var w = d.x1 - d.x0, h = d.y1 - d.y0, g = d3.select(this), col = "var(--tm-on-" + d.data.s + ")";
+        if (h < 120 && w >= 260) {
+          // rettangolo basso e largo: numero a sinistra, quota e descrizione affiancate a destra
+          var nb = g.append("text").attr("class", "tm-num").attr("x", 10).attr("y", Math.min(h - 10, 40)).style("fill", col).style("font-size", "28px");
+          R.countUp(nb, d.value, f0, phase, ORDER.indexOf(d.data.s) * 150);
+          var tx = 10 + nb.node().getBBox().width + 14;
+          if (nb.node().getBBox().width < 10) tx = 10 + f0(d.value).length * 17 + 14;   // in fase "pre" il numero vale 0
+          if (h >= 60) {
+            g.append("text").attr("class", "tm-pct").attr("x", tx).attr("y", 22).style("fill", col).text(R.pct(d.value / tot, 1) + " del totale");
+            var lb = g.append("text").attr("class", "tm-lab").attr("x", tx).attr("y", 40).style("fill", col).style("font-size", "13px").text(ST[d.data.s].lab);
+            R.wrap(lb, w - tx - 10, 1.2);
+            if (lb.node().getBBox().y + lb.node().getBBox().height > h - 4) lb.remove();
+          } else {   // fascia molto bassa (mobile): quota e descrizione in un unico testo a capo
+            var one = g.append("text").attr("class", "tm-lab").attr("x", tx).attr("y", 17).style("fill", col).style("font-size", "12px")
+              .text(R.pct(d.value / tot, 1) + " · " + ST[d.data.s].lab);
+            R.wrap(one, w - tx - 8, 1.15);
+            if (one.node().getBBox().y + one.node().getBBox().height > h - 2) one.text(R.pct(d.value / tot, 1) + " del totale");
+          }
+          return;
+        }
+        var small = w < 200 || h < 120, pad = small ? 8 : 12;
+        var num = g.append("text").attr("class", "tm-num").attr("x", pad).attr("y", pad + (small ? 24 : 36))
+          .style("fill", col).style("font-size", small ? "28px" : null);
+        R.countUp(num, d.value, f0, phase, ORDER.indexOf(d.data.s) * 150);
+        g.append("text").attr("class", "tm-pct").attr("x", pad).attr("y", pad + (small ? 44 : 60)).style("fill", col)
+          .text(R.pct(d.value / tot, 1) + " del totale");
+        var lab = g.append("text").attr("class", "tm-lab").attr("x", pad).attr("y", pad + (small ? 64 : 84)).style("fill", col)
+          .style("font-size", small ? "13px" : null).text(ST[d.data.s].lab);
+        R.wrap(lab, w - 2 * pad, 1.25);
+        if (lab.node().getBBox().y + lab.node().getBBox().height > h - 4) lab.remove();   // se non entra, resta nel tooltip
+      });
+
+      R.enter(cells, phase,
+        function (s) { s.style("opacity", 0); },
+        function (s) { (s.delay ? s.delay(function (d) { return ORDER.indexOf(d.data.s) * 150; }) : s).style("opacity", 1); });
+
+      clear = function () { cells.classed("is-dimmed", false); };
+      cells.style("cursor", "pointer")
+        .on("pointerenter pointerdown", function (ev, d) {
+          cells.classed("is-dimmed", function (q) { return q !== d; });
+          var p = d3.pointer(ev, host);
+          tip.show(R.tipHTML({
+            title: ST[d.data.s].lab, value: f0(d.value), unit: "opere (" + R.pct(d.value / tot, 1) + ")",
+            rows: d.data.parti.slice(0, 4).map(function (x) { return [x.ente, f0(x.n)]; }),
+            note: "Gli enti con più opere in questo stato"
+          }), p[0], p[1]);
+        })
+        .on("pointerleave", function (ev) { if (ev.pointerType === "mouse") { tip.hide(); clear(); } });
+    });
+  }).catch(function (e) { R.fail("#tm", e); });
+})();
+</script>
+</body>
+</html>

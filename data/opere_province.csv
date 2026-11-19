@@ -1,0 +1,108 @@
+sigla;provincia;regione;opere;amm_centrali;comuni;disponibile
+CH;Chieti;Abruzzo;;;;no
+AQ;L'Aquila;Abruzzo;;;;no
+PE;Pescara;Abruzzo;;;;no
+TE;Teramo;Abruzzo;;;;no
+MT;Matera;Basilicata;2;0;Matera, Ferrandina;si
+PZ;Potenza;Basilicata;5;0;Lavello (2), Lagonegro (2), Castelmezzano;si
+CZ;Catanzaro;Calabria;2;0;Taverna, Catanzaro;si
+CS;Cosenza;Calabria;1;0;Belvedere Marittimo;si
+KR;Crotone;Calabria;1;0;Petilia Policastro;si
+RC;Reggio Calabria;Calabria;1;0;Siderno;si
+VV;Vibo Valentia;Calabria;3;0;Vibo Valentia (2), Serra San Bruno;si
+AV;Avellino;Campania;2;0;Nusco, Pratola Serra;si
+BN;Benevento;Campania;2;0;Foglianise (2);si
+CE;Caserta;Campania;1;0;San Nicola la Strada;si
+NA;Napoli;Campania;2;0;Cimitile (2);si
+SA;Salerno;Campania;5;0;Laviano (2), Torchiara, Cicerale, Cava de' Tirreni;si
+BO;Bologna;Emilia-Romagna;2;0;Bologna (2);si
+FE;Ferrara;Emilia-Romagna;0;0;;si
+FC;Forlì-Cesena;Emilia-Romagna;0;0;;si
+MO;Modena;Emilia-Romagna;0;0;;si
+PR;Parma;Emilia-Romagna;0;0;;si
+PC;Piacenza;Emilia-Romagna;2;0;Piacenza (2);si
+RA;Ravenna;Emilia-Romagna;0;0;;si
+RE;Reggio nell'Emilia;Emilia-Romagna;0;0;;si
+RN;Rimini;Emilia-Romagna;2;0;Montegridolfo (2);si
+GO;Gorizia;Friuli-Venezia Giulia;2;0;Gorizia (2);si
+PN;Pordenone;Friuli-Venezia Giulia;1;0;Arba;si
+TS;Trieste;Friuli-Venezia Giulia;0;0;;si
+UD;Udine;Friuli-Venezia Giulia;1;0;San Vito al Torre;si
+FR;Frosinone;Lazio;7;0;Pontecorvo (2), Arce (2), Castro dei Volsci, Picinisco, Torre Cajetani;si
+LT;Latina;Lazio;5;0;Ventotene (4), Terracina;si
+RI;Rieti;Lazio;1;0;Borgo Velino;si
+RM;Roma;Lazio;12;2;Roma (7), Poli, Ardea, Nettuno, Montorio Romano, Palombara Sabina;si
+VT;Viterbo;Lazio;0;0;;si
+GE;Genova;Liguria;0;0;;si
+IM;Imperia;Liguria;0;0;;si
+SP;La Spezia;Liguria;0;0;;si
+SV;Savona;Liguria;2;0;Noli, Albisola Superiore;si
+BG;Bergamo;Lombardia;0;0;;si
+BS;Brescia;Lombardia;3;0;Brescia (2), Acquafredda;si
+CO;Como;Lombardia;1;0;Albiolo;si
+CR;Cremona;Lombardia;0;0;;si
+LC;Lecco;Lombardia;1;0;Viganò;si
+LO;Lodi;Lombardia;0;0;;si
+MN;Mantova;Lombardia;1;0;Borgo Mantovano;si
+MI;Milano;Lombardia;4;0;Peschiera Borromeo, Bresso, Abbiategrasso, Novate Milanese;si
+MB;Monza e della Brianza;Lombardia;3;0;Varedo, Besana in Brianza, Ronco Briantino;si
+PV;Pavia;Lombardia;1;0;Golferenzo;si
+SO;Sondrio;Lombardia;0;0;;si
+VA;Varese;Lombardia;0;0;;si
+AN;Ancona;Marche;0;0;;si
+AP;Ascoli Piceno;Marche;1;0;Folignano;si
+FM;Fermo;Marche;0;0;;si
+MC;Macerata;Marche;2;0;Montelupone, Macerata;si
+PU;Pesaro e Urbino;Marche;2;0;Fossombrone, Vallefoglia;si
+CB;Campobasso;Molise;3;0;Palata (2), Bonefro;si
+IS;Isernia;Molise;5;0;Venafro (2), Agnone, Montaquila, Poggio Sannita;si
+AL;Alessandria;Piemonte;0;0;;si
+AT;Asti;Piemonte;1;0;Asti;si
+BI;Biella;Piemonte;1;0;Biella;si
+CN;Cuneo;Piemonte;0;0;;si
+NO;Novara;Piemonte;0;0;;si
+TO;Torino;Piemonte;1;0;Giaveno;si
+VB;Verbano-Cusio-Ossola;Piemonte;0;0;;si
+VC;Vercelli;Piemonte;0;0;;si
+BA;Bari;Puglia;3;0;Bari (3);si
+BT;Barletta-Andria-Trani;Puglia;0;0;;si
+BR;Brindisi;Puglia;1;0;Villa Castelli;si
+FG;Foggia;Puglia;6;0;San Nicandro Garganico (2), Torremaggiore (2), Manfredonia (2);si
+LE;Lecce;Puglia;4;0;Tricase (2), Calimera, Santa Cesarea Terme;si
+TA;Taranto;Puglia;6;0;Taranto (3), Lizzano (2), Martina Franca;si
+CA;Cagliari;Sardegna;2;0;Settimo San Pietro, Capoterra;si
+NU;Nuoro;Sardegna;8;0;Nuoro (4), Orosei, Siniscola, Ottana, Irgoli;si
+OR;Oristano;Sardegna;4;0;Baressa (2), Oristano, Arborea;si
+SS;Sassari;Sardegna;7;0;Ozieri (3), Olbia, Arzachena, Porto Torres, Thiesi;si
+SU;Sud Sardegna;Sardegna;4;0;Monastir, San Vito, Iglesias, Suelli;si
+AG;Agrigento;Sicilia;7;0;Casteltermini (3), Santo Stefano Quisquina, Cianciana, Cammarata, Agrigento;si
+CL;Caltanissetta;Sicilia;4;0;Montedoro, Sutera, Mussomeli, Delia;si
+CT;Catania;Sicilia;1;0;Zafferana Etnea;si
+EN;Enna;Sicilia;0;0;;si
+ME;Messina;Sicilia;7;0;Castell'Umberto (2), Ficarra, Basicò, Messina, Gallodoro, Ucria;si
+PA;Palermo;Sicilia;9;0;Bompietro (3), Palermo (2), Marineo, Caltavuturo, San Cipirello, Alimena;si
+RG;Ragusa;Sicilia;0;0;;si
+SR;Siracusa;Sicilia;3;0;Augusta, Sortino, Solarino;si
+TP;Trapani;Sicilia;2;0;Vita (2);si
+AR;Arezzo;Toscana;0;0;;si
+FI;Firenze;Toscana;2;1;Firenze, Capraia e Limite;si
+GR;Grosseto;Toscana;4;0;Roccalbegna (3), Castel del Piano;si
+LI;Livorno;Toscana;0;0;;si
+LU;Lucca;Toscana;0;0;;si
+MS;Massa-Carrara;Toscana;0;0;;si
+PI;Pisa;Toscana;2;0;Pisa, San Giuliano Terme;si
+PT;Pistoia;Toscana;1;0;Larciano;si
+PO;Prato;Toscana;0;0;;si
+SI;Siena;Toscana;1;1;Siena;si
+BZ;Bolzano/Bozen;Trentino-Alto Adige/Südtirol;0;0;;si
+TN;Trento;Trentino-Alto Adige/Südtirol;1;0;Dimaro Folgarida;si
+PG;Perugia;Umbria;2;0;Spoleto, Gubbio;si
+TR;Terni;Umbria;3;0;Terni (3);si
+AO;Valle d'Aosta/Vallée d'Aoste;Valle d'Aosta/Vallée d'Aoste;;;;no
+BL;Belluno;Veneto;0;0;;si
+PD;Padova;Veneto;3;0;Villafranca Padovana, Selvazzano Dentro, Vigonza;si
+RO;Rovigo;Veneto;0;0;;si
+TV;Treviso;Veneto;1;0;Breda di Piave;si
+VE;Venezia;Veneto;1;0;San Donà di Piave;si
+VR;Verona;Veneto;0;0;;si
+VI;Vicenza;Veneto;5;0;Altavilla Vicentina, Vicenza, Sandrigo, Trissino, Bolzano Vicentino;si

@@ -1,0 +1,126 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Le 10 opere pubbliche incompiute più costose – Radar QN</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Libre+Franklin:wght@400;500;600;700&family=Newsreader:opsz,wght@6..72,400;6..72,700&display=swap">
+<link rel="stylesheet" href="../assets/radar.css">
+<script src="https://cdn.jsdelivr.net/npm/d3@7"></script>
+<script src="../assets/radar.js"></script>
+<style>
+  .op-name { font-size: 13px; font-weight: 600; fill: var(--ink); }
+  .op-place { font-size: 12px; fill: var(--ink-2); }
+</style>
+</head>
+<body>
+<main class="radar">
+  <header>
+    <h1 class="r-title" id="title">Le 10 opere pubbliche incompiute più costose</h1>
+    <p class="r-sub">Valori in euro, dati 2025-2026</p>
+  </header>
+
+  <figure class="r-chart" id="bars"></figure>
+
+  <p class="r-note">Esclusi dalla classifica sette importi o opere con dati non affidabili negli elenchi pubblicati (importi incongruenti, codici CUP non validi o ripetuti, stato dei lavori incoerente).</p>
+
+  <footer class="r-foot">
+    <span>Fonte: MIT e Regioni, elenco-anagrafe delle opere incompiute 2025</span>
+    <span>Elaborazione Radar – QN</span>
+  </footer>
+</main>
+
+<script>
+(function () {
+  var R = Radar, fmt = R.fmt;
+  var f1 = function (v) { return fmt(v, 1); };
+
+  R.loadCSV("../data/top10_importo.csv").then(function (rows) {
+    var data = rows.map(function (r) {
+      return { nome: r.opera, prov: r.provincia, reg: r.regione, v: R.num(r.importo_mln) };
+    }).sort(function (a, b) { return b.v - a.v; });
+    var top = data[0], altre = d3.sum(data.slice(1), function (d) { return d.v; });
+    var ratio = top.v / altre;
+
+    var host = document.getElementById("bars");
+    var tip = R.tooltip(host);
+    var clear = function () {};
+    R.dismissOutside(host, function () { tip.hide(); clear(); });
+
+    R.responsive(host, function (W, phase) {
+      var narrow = R.isNarrow(W);
+      var ROW = narrow ? 64 : 58, BH = 14, LAB = 34;   // riga: 2 righe di etichetta + barra
+      var H = ROW * data.length;
+      var valW = narrow ? 64 : 76;                      // spazio per il valore a fine barra
+      var x = d3.scaleLinear().domain([0, top.v]).range([0, W - valW]);
+
+      d3.select(host).select("svg").remove();
+      var svg = d3.select(host).insert("svg", ".r-tip").attr("width", W).attr("height", H).attr("role", "img")
+        .attr("aria-label", "Grafico a barre: le dieci opere incompiute più costose. " + data.map(function (d) {
+          return d.nome + ", " + d.prov + " (" + d.reg + "), " + f1(d.v) + " milioni";
+        }).join("; ") + ". La prima vale " + fmt(ratio, 1) + " volte la somma delle altre nove.");
+      svg.append("title").text("Le dieci opere incompiute più costose, milioni di euro");
+
+      var g = svg.append("g");
+      var rows = g.selectAll("g").data(data).join("g").attr("class", "mark")
+        .attr("transform", function (d, i) { return "translate(0," + i * ROW + ")"; });
+
+      rows.append("text").attr("class", "op-name").attr("x", 0).attr("y", 13).text(function (d) { return d.nome; })
+        .each(function () { R.wrap(d3.select(this), W - 4, 1.2); });
+      rows.append("text").attr("class", "op-place").attr("x", 0).attr("y", 28)
+        .text(function (d) { return d.prov === d.reg ? d.reg : d.prov + ", " + d.reg; });
+      // se il nome va a capo (mobile), provincia e barra scendono di una riga
+      rows.each(function () {
+        var n = +d3.select(this).select(".op-name").attr("data-lines") || 1;
+        if (n > 1) d3.select(this).select(".op-place").attr("y", 28 + (n - 1) * 15.6);
+        this.__shift = (n - 1) * 15.6;
+      });
+
+      var bars = rows.append("path").style("fill", function (d, i) { return i === 0 ? "var(--blue)" : "var(--blue)"; });
+      var vals = rows.append("text").attr("class", "val-label").attr("dy", "0.35em");
+      function draw(sel, t) {
+        sel.each(function (d) {
+          var row = this.parentNode, sh = row.__shift || 0, y = LAB + sh;
+          d3.select(this).attr("d", R.barPathH(0, y, Math.max(1, x(d.v) * t), BH, 2));
+        });
+      }
+      function place(sel) {
+        sel.each(function (d) {
+          var sh = this.parentNode.__shift || 0;
+          d3.select(this).attr("x", x(d.v) + 6).attr("y", LAB + sh + BH / 2);
+        });
+      }
+      place(vals);
+      R.enter(bars, phase,
+        function (s) { draw(s, 0); },
+        function (s) {
+          if (s.attrTween) s.attrTween("d", function (d) {
+            var node = this; return function (t) { var sh = node.parentNode.__shift || 0; return R.barPathH(0, LAB + sh, Math.max(1, x(d.v) * t), BH, 2); };
+          }); else draw(s, 1);
+        });
+      vals.each(function (d) { R.countUp(d3.select(this), d.v, function (v) { return f1(v) + " mln"; }, phase); });
+
+      // altezza reale: l'ultima riga può essere andata a capo
+      var last = rows.nodes()[rows.size() - 1];
+      svg.attr("height", (rows.size() - 1) * ROW + LAB + (last.__shift || 0) + BH + 4);
+      // righe più alte se ci sono nomi su due righe: si ricalcolano le posizioni cumulando gli scarti
+      var acc = 0;
+      rows.attr("transform", function (d, i) { var y = i * ROW + acc; acc += this.__shift || 0; return "translate(0," + y + ")"; });
+      svg.attr("height", (rows.size() - 1) * ROW + acc + LAB + BH + 4);
+
+      clear = function () { rows.classed("is-dimmed", false); };
+      rows.style("cursor", "pointer")
+        .on("pointerenter pointerdown", function (ev, d) {
+          rows.classed("is-dimmed", function (q) { return q !== d; });
+          var p = d3.pointer(ev, host);
+          tip.show(R.tipHTML({ title: d.nome, value: f1(d.v), unit: "milioni di euro", rows: [["Provincia", d.prov], ["Regione", d.reg]] }), p[0], p[1]);
+        })
+        .on("pointerleave", function (ev) { if (ev.pointerType === "mouse") { tip.hide(); clear(); } });
+    });
+  }).catch(function (e) { R.fail("#bars", e); });
+})();
+</script>
+</body>
+</html>
