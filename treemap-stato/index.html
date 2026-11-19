@@ -27,10 +27,6 @@
     <p class="r-sub">Opere pubbliche incompiute per stato dei lavori secondo il DM 42/2013. Anno di riferimento 2025</p>
   </header>
 
-  <div class="r-big" id="big" aria-hidden="true">
-    <span class="r-big__num" id="big-num">&nbsp;</span>
-    <span class="r-big__label" id="big-label"></span>
-  </div>
 
   <figure class="r-chart" id="tm"></figure>
 
@@ -65,10 +61,6 @@
     var shareB = byS.b / tot;
     if (shareB <= 0.5) d3.select("#title").text("Le opere incompiute per stato dei lavori");   // il titolo dipende dal dato
 
-    var bigNum = d3.select("#big-num");
-    d3.select("#big-label").text("opere su " + f0(tot) + " (" + R.pct(shareB, 0).replace(",0", "") + ") sono ferme senza le condizioni per riprendere i lavori");
-    if (R.reduced) bigNum.text(f0(byS.b));
-    else { bigNum.text(f0(0)); R.onFirstView(document.getElementById("big"), function () { R.countUp(bigNum, byS.b, f0, "play"); }); }
 
     d3.select("#nota").text(
       "Lo stato è la classificazione prevista dal DM 42/2013 (art. 1). Le cause vere e proprie dell'interruzione " +
