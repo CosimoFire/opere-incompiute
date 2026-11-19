@@ -124,7 +124,7 @@
           .text(R.pct(d.value / tot, 1) + " del totale");
         var lab = g.append("text").attr("class", "tm-lab").attr("x", pad).attr("y", pad + (small ? 64 : 84)).style("fill", col)
           .style("font-size", small ? "13px" : null).text(ST[d.data.s].lab);
-        R.wrap(lab, w - 2 * pad, 1.25);
+        R.wrap(lab, w - 2 * pad - 12, 1.25);   // margine: con un carattere appena più largo il testo non tocca il bordo
         if (lab.node().getBBox().y + lab.node().getBBox().height > h - 4) lab.remove();   // se non entra, resta nel tooltip
       });
 
